@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ParkingRecordsService } from '../../core/services/parking-records.service';
 import { ParkingSlotService } from '../../core/services/parking-slot.service';
+import { ReceiptService } from '../../core/services/receipt.service';
 import { ParkingSession, ParkingSlot, PaginationMeta } from '../../core/models';
 
 @Component({
@@ -54,6 +55,7 @@ import { ParkingSession, ParkingSlot, PaginationMeta } from '../../core/models';
             <thead>
               <tr>
                 <th>Vehicle Number</th>
+                <th>Driver Name</th>
                 <th>Type</th>
                 <th>Slot</th>
                 <th class="sortable" (click)="sort('entryTime')">
@@ -69,22 +71,34 @@ import { ParkingSession, ParkingSlot, PaginationMeta } from '../../core/models';
                   <span class="sort-indicator" *ngIf="sortBy === 'duration'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
                 </th>
                 <th>Fee</th>
-                <th>Status</th>
+                <th>Fine</th>
+                <th>Total</th>
+                <th class="right-align">Receipt</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let record of records" class="table-row">
                 <td class="vehicle-num">{{ record.vehicleNumber }}</td>
+                <td class="driver-name" [title]="record.phoneNumber || ''">{{ record.driverName || 'N/A' }}</td>
                 <td>
                   <span class="type-badge" [attr.data-type]="record.vehicleType">{{ record.vehicleType | titlecase }}</span>
                 </td>
                 <td>{{ record.assignedSlot }}</td>
                 <td class="date-cell">{{ record.entryTime | date:'short' }}</td>
                 <td class="date-cell">{{ record.exitTime ? (record.exitTime | date:'short') : '—' }}</td>
-                <td>{{ formatDuration(record.duration) }}</td>
-                <td class="fee-cell">{{ record.fee !== null ? '₹' + (record.fee | number:'1.2-2') : '—' }}</td>
                 <td>
-                  <span class="status-badge completed">Completed</span>
+                  <div class="duration-stack">
+                    <span>{{ formatDuration(record.duration) }}</span>
+                    <span class="expected-text" *ngIf="record.expectedDuration">Exp: {{ formatDuration(record.expectedDuration) }}</span>
+                  </div>
+                </td>
+                <td class="fee-cell">{{ record.fee !== null ? '₹' + (record.fee | number:'1.2-2') : '—' }}</td>
+                <td class="fine-cell">{{ (record.fine !== null && record.fine !== undefined) ? '₹' + (record.fine | number:'1.2-2') : '—' }}</td>
+                <td class="total-cell">{{ record.fee !== null ? '₹' + ((record.fee + (record.fine || 0)) | number:'1.2-2') : '—' }}</td>
+                <td class="right-align">
+                  <button class="btn-action" title="Download PDF Receipt" (click)="downloadReceipt(record)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -117,88 +131,102 @@ import { ParkingSession, ParkingSlot, PaginationMeta } from '../../core/models';
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     .page-header { margin-bottom: 20px; }
-    .section-title { font-size: 22px; font-weight: 700; color: #f1f5f9; margin: 0; }
-    .section-subtitle { font-size: 14px; color: #64748b; margin: 4px 0 0; }
+    .section-title { font-size: 22px; font-weight: 700; color: #EFE5D0; margin: 0; }
+    .section-subtitle { font-size: 14px; color: #6d8399; margin: 4px 0 0; }
 
     .filters-bar {
       display: flex; align-items: flex-end; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
     }
     .search-box { position: relative; flex: 1; min-width: 220px; }
-    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #64748b; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #6d8399; }
     .search-input {
-      width: 100%; padding: 10px 14px 10px 36px; border: 1px solid rgba(99, 102, 241, 0.15);
-      border-radius: 10px; background: rgba(30, 41, 59, 0.6); color: #f1f5f9;
+      width: 100%; padding: 10px 14px 10px 36px; border: 1px solid rgba(125, 192, 181, 0.15);
+      border-radius: 10px; background: rgba(37, 61, 82, 0.6); color: #EFE5D0;
       font-size: 14px; outline: none; transition: all 0.2s ease; box-sizing: border-box;
     }
-    .search-input:focus { border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-    .search-input::placeholder { color: #64748b; }
+    .search-input:focus { border-color: rgba(125, 192, 181, 0.4); box-shadow: 0 0 0 3px rgba(125, 192, 181, 0.1); }
+    .search-input::placeholder { color: #6d8399; }
 
     .filter-group { display: flex; flex-direction: column; gap: 4px; }
-    .filter-group label { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+    .filter-group label { font-size: 11px; font-weight: 600; color: #6d8399; text-transform: uppercase; letter-spacing: 0.5px; }
     .filter-input {
-      padding: 10px 12px; border: 1px solid rgba(99, 102, 241, 0.15);
-      border-radius: 10px; background: rgba(30, 41, 59, 0.6); color: #f1f5f9;
+      padding: 10px 12px; border: 1px solid rgba(125, 192, 181, 0.15);
+      border-radius: 10px; background: rgba(37, 61, 82, 0.6); color: #EFE5D0;
       font-size: 13px; outline: none; transition: all 0.2s ease;
     }
-    .filter-input:focus { border-color: rgba(99, 102, 241, 0.4); }
+    .filter-input:focus { border-color: rgba(125, 192, 181, 0.4); }
 
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-    .btn-secondary { background: rgba(99, 102, 241, 0.1); color: #94a3b8; }
-    .btn-secondary:hover { background: rgba(99, 102, 241, 0.2); }
+    .btn-secondary { background: rgba(125, 192, 181, 0.1); color: #a8b8c8; }
+    .btn-secondary:hover { background: rgba(125, 192, 181, 0.2); }
 
     .loading-container { display: flex; justify-content: center; padding: 80px; }
-    .spinner { width: 36px; height: 36px; border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .spinner { width: 36px; height: 36px; border: 3px solid rgba(125, 192, 181, 0.2); border-top-color: #508A7B; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .table-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 16px; overflow: hidden;
+      background: linear-gradient(135deg, rgba(37, 61, 82, 0.8), rgba(37, 61, 82, 0.5));
+      border: 1px solid rgba(125, 192, 181, 0.1); border-radius: 16px; overflow: hidden;
     }
     .table-wrapper { overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th {
       text-align: left; padding: 14px 16px; font-size: 12px; font-weight: 600;
-      color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;
-      border-bottom: 1px solid rgba(99, 102, 241, 0.1); background: rgba(15, 23, 42, 0.5);
+      color: #6d8399; text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(125, 192, 181, 0.1); background: rgba(26, 47, 66, 0.5);
     }
-    .data-table td { padding: 14px 16px; font-size: 14px; color: #cbd5e1; border-bottom: 1px solid rgba(99, 102, 241, 0.05); }
+    .data-table td { padding: 14px 16px; font-size: 14px; color: #cbd5e1; border-bottom: 1px solid rgba(125, 192, 181, 0.05); }
     .table-row { transition: background 0.15s ease; }
-    .table-row:hover td { background: rgba(99, 102, 241, 0.04); }
-    .vehicle-num { font-weight: 700; color: #f1f5f9; font-family: monospace; font-size: 13px; }
-    .date-cell { font-size: 13px; color: #94a3b8; }
-    .fee-cell { font-weight: 600; color: #34d399; }
+    .table-row:hover td { background: rgba(125, 192, 181, 0.04); }
+    .vehicle-num { font-weight: 700; color: #EFE5D0; font-family: monospace; font-size: 13px; }
+    .driver-name { font-size: 13px; color: #cbd5e1; white-space: nowrap; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+    .date-cell { font-size: 13px; color: #a8b8c8; }
+    .duration-stack { display: flex; flex-direction: column; gap: 2px; }
+    .expected-text { font-size: 11px; color: #6d8399; }
+    .fee-cell { color: #cbd5e1; }
+    .fine-cell { color: #e07a78; }
+    .total-cell { font-weight: 700; color: #7DC0B5; }
+    .right-align { text-align: right; }
+
+    .btn-action {
+      background: rgba(125, 192, 181, 0.1); color: #7DC0B5; border: none;
+      padding: 6px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .btn-action:hover { background: rgba(125, 192, 181, 0.2); color: #EFE5D0; }
+    .btn-action svg { width: 16px; height: 16px; }
 
     .sortable { cursor: pointer; user-select: none; }
-    .sortable:hover { color: #818cf8; }
-    .sort-indicator { color: #818cf8; font-size: 12px; margin-left: 4px; }
+    .sortable:hover { color: #7DC0B5; }
+    .sort-indicator { color: #7DC0B5; font-size: 12px; margin-left: 4px; }
 
     .type-badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-    [data-type="car"] { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+    [data-type="car"] { background: rgba(125, 192, 181, 0.15); color: #7DC0B5; }
     [data-type="motorcycle"] { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
-    [data-type="suv"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-    [data-type="truck"] { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    [data-type="suv"] { background: rgba(245, 158, 11, 0.15); color: #d4a953; }
+    [data-type="truck"] { background: rgba(239, 68, 68, 0.15); color: #e07a78; }
 
     .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-    .status-badge.completed { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .status-badge.completed { background: rgba(16, 185, 129, 0.15); color: #7DC0B5; }
 
-    .empty-state { display: flex; flex-direction: column; align-items: center; padding: 60px; color: #64748b; gap: 8px; }
+    .empty-state { display: flex; flex-direction: column; align-items: center; padding: 60px; color: #6d8399; gap: 8px; }
     .empty-icon { width: 48px; height: 48px; }
-    .empty-state p { margin: 0; font-weight: 600; font-size: 16px; color: #94a3b8; }
+    .empty-state p { margin: 0; font-weight: 600; font-size: 16px; color: #a8b8c8; }
     .empty-state span { font-size: 13px; }
 
     .pagination {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px; border-top: 1px solid rgba(99, 102, 241, 0.08);
+      padding: 16px 20px; border-top: 1px solid rgba(125, 192, 181, 0.08);
     }
-    .page-info { font-size: 13px; color: #64748b; }
+    .page-info { font-size: 13px; color: #6d8399; }
     .page-buttons { display: flex; gap: 6px; }
     .page-btn {
-      padding: 6px 12px; border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 8px;
-      background: rgba(15, 23, 42, 0.4); color: #94a3b8; font-size: 13px; font-weight: 500;
+      padding: 6px 12px; border: 1px solid rgba(125, 192, 181, 0.1); border-radius: 8px;
+      background: rgba(26, 47, 66, 0.4); color: #a8b8c8; font-size: 13px; font-weight: 500;
       cursor: pointer; transition: all 0.2s ease;
     }
-    .page-btn:hover:not(:disabled) { border-color: rgba(99, 102, 241, 0.3); color: #818cf8; }
-    .page-btn.active { background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.3); }
+    .page-btn:hover:not(:disabled) { border-color: rgba(125, 192, 181, 0.3); color: #7DC0B5; }
+    .page-btn.active { background: rgba(125, 192, 181, 0.2); color: #7DC0B5; border-color: rgba(125, 192, 181, 0.3); }
     .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   `]
 })
@@ -222,6 +250,7 @@ export class ParkingRecordsComponent implements OnInit {
   constructor(
     private recordsService: ParkingRecordsService,
     private slotService: ParkingSlotService,
+    private receiptService: ReceiptService
   ) {}
 
   ngOnInit() {
@@ -293,11 +322,16 @@ export class ParkingRecordsComponent implements OnInit {
     return pages;
   }
 
-  formatDuration(minutes: number | null): string {
+  formatDuration(minutes: number | null | undefined): string {
     if (!minutes) return '—';
     if (minutes < 60) return `${minutes}m`;
     const h = Math.floor(minutes / 60);
     const m = minutes % 60;
     return `${h}h ${m}m`;
   }
+
+  downloadReceipt(record: ParkingSession) {
+    this.receiptService.generateReceipt(record);
+  }
 }
+

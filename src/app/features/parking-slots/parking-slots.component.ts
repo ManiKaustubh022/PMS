@@ -155,78 +155,78 @@ import { ParkingSlot } from '../../core/models';
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .section-title { font-size: 22px; font-weight: 700; color: #f1f5f9; margin: 0; }
-    .section-subtitle { font-size: 14px; color: #64748b; margin: 4px 0 0; }
+    .section-title { font-size: 22px; font-weight: 700; color: #EFE5D0; margin: 0; }
+    .section-subtitle { font-size: 14px; color: #6d8399; margin: 4px 0 0; }
 
     .btn {
       display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
       border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
       cursor: pointer; transition: all 0.2s ease;
     }
-    .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
+    .btn-primary { background: linear-gradient(135deg, #508A7B, #3d6e62); color: white; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(125, 192, 181, 0.4); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: rgba(99, 102, 241, 0.1); color: #94a3b8; }
-    .btn-secondary:hover { background: rgba(99, 102, 241, 0.2); }
-    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+    .btn-secondary { background: rgba(125, 192, 181, 0.1); color: #a8b8c8; }
+    .btn-secondary:hover { background: rgba(125, 192, 181, 0.2); }
+    .btn-danger { background: linear-gradient(135deg, #c0605e, #dc2626); color: white; }
     .btn-danger:hover { box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
     .btn-icon { width: 16px; height: 16px; }
 
     .filter-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
     .filter-tab {
-      padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.1);
-      background: rgba(30, 41, 59, 0.5); color: #94a3b8; font-size: 13px; font-weight: 500;
+      padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(125, 192, 181, 0.1);
+      background: rgba(37, 61, 82, 0.5); color: #a8b8c8; font-size: 13px; font-weight: 500;
       cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
     }
-    .filter-tab:hover { border-color: rgba(99, 102, 241, 0.2); }
-    .filter-tab.active { background: rgba(99, 102, 241, 0.15); color: #818cf8; border-color: rgba(99, 102, 241, 0.3); }
+    .filter-tab:hover { border-color: rgba(125, 192, 181, 0.2); }
+    .filter-tab.active { background: rgba(125, 192, 181, 0.15); color: #7DC0B5; border-color: rgba(125, 192, 181, 0.3); }
     .filter-count {
       padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 700;
-      background: rgba(99, 102, 241, 0.15); color: #818cf8;
+      background: rgba(125, 192, 181, 0.15); color: #7DC0B5;
     }
 
     .loading-container { display: flex; justify-content: center; padding: 80px; }
     .spinner {
       width: 36px; height: 36px;
-      border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: #6366f1;
+      border: 3px solid rgba(125, 192, 181, 0.2); border-top-color: #508A7B;
       border-radius: 50%; animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .table-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 16px; overflow: hidden;
+      background: linear-gradient(135deg, rgba(37, 61, 82, 0.8), rgba(37, 61, 82, 0.5));
+      border: 1px solid rgba(125, 192, 181, 0.1); border-radius: 16px; overflow: hidden;
     }
     .table-wrapper { overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th {
       text-align: left; padding: 14px 16px; font-size: 12px; font-weight: 600;
-      color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;
-      border-bottom: 1px solid rgba(99, 102, 241, 0.1); background: rgba(15, 23, 42, 0.5);
+      color: #6d8399; text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(125, 192, 181, 0.1); background: rgba(26, 47, 66, 0.5);
     }
-    .data-table td { padding: 14px 16px; font-size: 14px; color: #cbd5e1; border-bottom: 1px solid rgba(99, 102, 241, 0.05); }
+    .data-table td { padding: 14px 16px; font-size: 14px; color: #cbd5e1; border-bottom: 1px solid rgba(125, 192, 181, 0.05); }
     .table-row { transition: background 0.15s ease; }
-    .table-row:hover td { background: rgba(99, 102, 241, 0.04); }
-    .slot-num { font-weight: 700; color: #f1f5f9; font-family: monospace; font-size: 14px; }
-    .date-cell { font-size: 13px; color: #94a3b8; }
+    .table-row:hover td { background: rgba(125, 192, 181, 0.04); }
+    .slot-num { font-weight: 700; color: #EFE5D0; font-family: monospace; font-size: 14px; }
+    .date-cell { font-size: 13px; color: #a8b8c8; }
 
     .type-badge {
       padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
     }
     [data-type="compact"] { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
-    [data-type="standard"] { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-    [data-type="large"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-    [data-type="handicapped"] { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    [data-type="standard"] { background: rgba(125, 192, 181, 0.15); color: #7DC0B5; }
+    [data-type="large"] { background: rgba(245, 158, 11, 0.15); color: #d4a953; }
+    [data-type="handicapped"] { background: rgba(16, 185, 129, 0.15); color: #7DC0B5; }
 
     .status-badge {
       display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
       border-radius: 6px; font-size: 12px; font-weight: 600;
     }
-    .status-badge.available { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .status-badge.occupied { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .status-badge.available { background: rgba(16, 185, 129, 0.15); color: #7DC0B5; }
+    .status-badge.occupied { background: rgba(245, 158, 11, 0.15); color: #d4a953; }
     .status-dot { width: 6px; height: 6px; border-radius: 50%; }
-    .status-badge.available .status-dot { background: #34d399; }
-    .status-badge.occupied .status-dot { background: #fbbf24; }
+    .status-badge.available .status-dot { background: #7DC0B5; }
+    .status-badge.occupied .status-dot { background: #d4a953; }
 
     .actions { display: flex; gap: 6px; }
     .action-btn {
@@ -235,16 +235,16 @@ import { ParkingSlot } from '../../core/models';
       cursor: pointer; transition: all 0.2s ease;
     }
     .action-btn svg { width: 16px; height: 16px; }
-    .action-btn.edit { background: rgba(99, 102, 241, 0.1); color: #818cf8; }
-    .action-btn.edit:hover { background: rgba(99, 102, 241, 0.25); }
+    .action-btn.edit { background: rgba(125, 192, 181, 0.1); color: #7DC0B5; }
+    .action-btn.edit:hover { background: rgba(125, 192, 181, 0.25); }
     .action-btn.toggle { background: rgba(14, 165, 233, 0.1); color: #38bdf8; }
     .action-btn.toggle:hover { background: rgba(14, 165, 233, 0.25); }
-    .action-btn.delete { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+    .action-btn.delete { background: rgba(239, 68, 68, 0.1); color: #e07a78; }
     .action-btn.delete:hover { background: rgba(239, 68, 68, 0.25); }
 
     .empty-state {
       display: flex; flex-direction: column; align-items: center; padding: 60px;
-      color: #64748b; gap: 12px;
+      color: #6d8399; gap: 12px;
     }
     .empty-icon { width: 48px; height: 48px; }
 
@@ -255,7 +255,7 @@ import { ParkingSlot } from '../../core/models';
       backdrop-filter: blur(4px); animation: fadeIn 0.15s ease;
     }
     .modal {
-      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.2);
+      background: #253d52; border: 1px solid rgba(125, 192, 181, 0.2);
       border-radius: 16px; width: 440px; max-width: 90vw;
       animation: slideUp 0.2s ease;
     }
@@ -263,28 +263,28 @@ import { ParkingSlot } from '../../core/models';
     .small-modal { width: 380px; }
     .modal-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 24px; border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      padding: 20px 24px; border-bottom: 1px solid rgba(125, 192, 181, 0.1);
     }
-    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #f1f5f9; }
+    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #EFE5D0; }
     .modal-close {
       width: 32px; height: 32px; border: none; border-radius: 8px;
-      background: rgba(99, 102, 241, 0.1); color: #94a3b8; cursor: pointer;
+      background: rgba(125, 192, 181, 0.1); color: #a8b8c8; cursor: pointer;
       font-size: 16px; display: flex; align-items: center; justify-content: center;
     }
-    .modal-close:hover { background: rgba(99, 102, 241, 0.2); }
+    .modal-close:hover { background: rgba(125, 192, 181, 0.2); }
     .modal-body { padding: 24px; }
-    .modal-body p { color: #94a3b8; margin: 0; }
-    .modal-footer { padding: 16px 24px; border-top: 1px solid rgba(99, 102, 241, 0.1); display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-body p { color: #a8b8c8; margin: 0; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid rgba(125, 192, 181, 0.1); display: flex; justify-content: flex-end; gap: 10px; }
 
     .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #a8b8c8; margin-bottom: 6px; }
     .form-input {
-      width: 100%; padding: 10px 14px; border: 1px solid rgba(99, 102, 241, 0.15);
-      border-radius: 10px; background: rgba(15, 23, 42, 0.6); color: #f1f5f9;
+      width: 100%; padding: 10px 14px; border: 1px solid rgba(125, 192, 181, 0.15);
+      border-radius: 10px; background: rgba(26, 47, 66, 0.6); color: #EFE5D0;
       font-size: 14px; outline: none; transition: all 0.2s ease; box-sizing: border-box;
     }
-    .form-input:focus { border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-    .form-input::placeholder { color: #64748b; }
+    .form-input:focus { border-color: rgba(125, 192, 181, 0.4); box-shadow: 0 0 0 3px rgba(125, 192, 181, 0.1); }
+    .form-input::placeholder { color: #6d8399; }
     select.form-input { cursor: pointer; }
 
     .toast {
@@ -422,3 +422,4 @@ export class ParkingSlotsComponent implements OnInit {
     setTimeout(() => (this.toast = null), 3000);
   }
 }
+

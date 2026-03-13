@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ParkingSessionService } from '../../core/services/parking-session.service';
 import { ParkingSlotService } from '../../core/services/parking-slot.service';
+import { ReceiptService } from '../../core/services/receipt.service';
 import { ParkingSession, ParkingSlot } from '../../core/models';
 
 @Component({
@@ -35,6 +36,36 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
                   <span class="type-emoji">{{ t.emoji }}</span>
                   <span>{{ t.label }}</span>
                 </button>
+              </div>
+            </div>
+            <div class="form-group row-group">
+              <div class="input-half">
+                <label>Driver Name <span class="required">*</span></label>
+                <input type="text" [(ngModel)]="entryForm.driverName" placeholder="e.g., John Doe" class="form-input" />
+              </div>
+              <div class="input-half">
+                <label>Phone Number <span class="required">*</span></label>
+                <input type="tel" [(ngModel)]="entryForm.phoneNumber" placeholder="e.g., +919876543210" class="form-input" />
+              </div>
+            </div>
+            <div class="form-group row-group">
+              <div class="input-half">
+                <label>DL Number <span class="required">*</span></label>
+                <input type="text" [(ngModel)]="entryForm.licenseNumber" placeholder="e.g., MH1220101234567" class="form-input" />
+              </div>
+              <div class="input-half">
+                <label>Expected Duration <span class="required">*</span></label>
+                <select [(ngModel)]="entryForm.expectedDuration" class="form-input">
+                  <option [ngValue]="1">1 Minute (Trial)</option>
+                  <option [ngValue]="60">1 Hour</option>
+                  <option [ngValue]="120">2 Hours</option>
+                  <option [ngValue]="180">3 Hours</option>
+                  <option [ngValue]="240">4 Hours</option>
+                  <option [ngValue]="360">6 Hours</option>
+                  <option [ngValue]="480">8 Hours</option>
+                  <option [ngValue]="720">12 Hours</option>
+                  <option [ngValue]="1440">24 Hours</option>
+                </select>
               </div>
             </div>
             <div class="form-group">
@@ -107,6 +138,10 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
                 <span class="exit-value vehicle-num">{{ exitingSession.vehicleNumber }}</span>
               </div>
               <div class="exit-row">
+                <span class="exit-label">Driver Name</span>
+                <span class="exit-value">{{ exitingSession.driverName || 'N/A' }}</span>
+              </div>
+              <div class="exit-row">
                 <span class="exit-label">Type</span>
                 <span class="exit-value">{{ exitingSession.vehicleType | titlecase }}</span>
               </div>
@@ -122,9 +157,17 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
                 <span class="exit-label">Duration</span>
                 <span class="exit-value highlight">{{ getElapsedTime(exitingSession.entryTime) }}</span>
               </div>
-              <div class="exit-row" *ngIf="exitResult">
-                <span class="exit-label">Fee</span>
-                <span class="exit-value fee">₹{{ exitResult.fee | number:'1.2-2' }}</span>
+              <div class="exit-row" *ngIf="exitResult && exitResult.fee !== null">
+                <span class="exit-label">Base Fee</span>
+                <span class="exit-value">₹{{ exitResult.fee | number:'1.2-2' }}</span>
+              </div>
+              <div class="exit-row" *ngIf="exitResult && exitResult.fine !== null && exitResult.fine !== undefined">
+                <span class="exit-label">Overtime Fine</span>
+                <span class="exit-value">₹{{ exitResult.fine | number:'1.2-2' }}</span>
+              </div>
+              <div class="exit-row total-row" *ngIf="exitResult">
+                <span class="exit-label">Total Amount</span>
+                <span class="exit-value fee">₹{{ (exitResult.fee || 0) + (exitResult.fine || 0) | number:'1.2-2' }}</span>
               </div>
             </div>
           </div>
@@ -135,10 +178,10 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
             </button>
           </div>
           <div class="modal-footer" *ngIf="exitResult">
-            <div class="exit-success">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="success-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-              <span>Exit completed successfully!</span>
-            </div>
+            <button class="btn btn-secondary" (click)="downloadReceipt()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="btn-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+              Download Receipt
+            </button>
             <button class="btn btn-primary" (click)="showExitModal = false; exitResult = null;">Done</button>
           </div>
         </div>
@@ -158,44 +201,47 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
     @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
 
     .form-card, .sessions-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 16px; overflow: hidden;
+      background: linear-gradient(135deg, rgba(37, 61, 82, 0.8), rgba(37, 61, 82, 0.5));
+      border: 1px solid rgba(125, 192, 181, 0.1); border-radius: 16px; overflow: hidden;
     }
     .card-header {
       display: flex; align-items: center; gap: 14px;
-      padding: 20px 24px; border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+      padding: 20px 24px; border-bottom: 1px solid rgba(125, 192, 181, 0.08);
     }
-    .card-header h3 { margin: 0; font-size: 17px; font-weight: 600; color: #f1f5f9; }
-    .card-header p { margin: 2px 0 0; font-size: 13px; color: #64748b; }
+    .card-header h3 { margin: 0; font-size: 17px; font-weight: 600; color: #EFE5D0; }
+    .card-header p { margin: 2px 0 0; font-size: 13px; color: #6d8399; }
     .card-icon {
       width: 44px; height: 44px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .card-icon svg { width: 22px; height: 22px; }
-    .entry-icon { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .active-icon { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+    .entry-icon { background: rgba(80, 138, 123, 0.2); color: #7DC0B5; }
+    .active-icon { background: rgba(43, 79, 111, 0.3); color: #7DC0B5; }
     .card-body { padding: 24px; }
 
     .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 6px; }
-    .required { color: #ef4444; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #a8b8c8; margin-bottom: 6px; }
+    .required { color: #c0605e; }
     .form-input {
-      width: 100%; padding: 10px 14px; border: 1px solid rgba(99, 102, 241, 0.15);
-      border-radius: 10px; background: rgba(15, 23, 42, 0.6); color: #f1f5f9;
+      width: 100%; padding: 10px 14px; border: 1px solid rgba(125, 192, 181, 0.15);
+      border-radius: 10px; background: rgba(26, 47, 66, 0.6); color: #EFE5D0;
       font-size: 14px; outline: none; transition: all 0.2s ease; box-sizing: border-box;
     }
-    .form-input:focus { border-color: rgba(99, 102, 241, 0.4); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-    .form-input::placeholder { color: #64748b; }
+    .form-input:focus { border-color: rgba(125, 192, 181, 0.4); box-shadow: 0 0 0 3px rgba(125, 192, 181, 0.1); }
+    .form-input::placeholder { color: #6d8399; }
+
+    .row-group { display: flex; gap: 12px; }
+    .input-half { flex: 1; display: flex; flex-direction: column; }
 
     .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
     .type-btn {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 12px 8px; border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 10px;
-      background: rgba(15, 23, 42, 0.4); color: #94a3b8; font-size: 12px; font-weight: 500;
+      padding: 12px 8px; border: 1px solid rgba(125, 192, 181, 0.1); border-radius: 10px;
+      background: rgba(26, 47, 66, 0.4); color: #a8b8c8; font-size: 12px; font-weight: 500;
       cursor: pointer; transition: all 0.2s ease;
     }
-    .type-btn:hover { border-color: rgba(99, 102, 241, 0.2); }
-    .type-btn.selected { border-color: #6366f1; background: rgba(99, 102, 241, 0.1); color: #818cf8; }
+    .type-btn:hover { border-color: rgba(125, 192, 181, 0.2); }
+    .type-btn.selected { border-color: #7DC0B5; background: rgba(80, 138, 123, 0.15); color: #7DC0B5; }
     .type-emoji { font-size: 22px; }
 
     .btn {
@@ -203,35 +249,35 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
       border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
       cursor: pointer; transition: all 0.2s ease;
     }
-    .btn-primary { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); }
+    .btn-primary { background: linear-gradient(135deg, #508A7B, #3d6e62); color: white; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(80, 138, 123, 0.4); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: rgba(99, 102, 241, 0.1); color: #94a3b8; }
+    .btn-secondary { background: rgba(80, 138, 123, 0.15); color: #a8b8c8; }
     .btn-exit {
-      background: rgba(239, 68, 68, 0.1); color: #f87171;
-      padding: 8px 14px; font-size: 13px; border: 1px solid rgba(239, 68, 68, 0.15);
+      background: rgba(192, 96, 94, 0.1); color: #e07a78;
+      padding: 8px 14px; font-size: 13px; border: 1px solid rgba(192, 96, 94, 0.2);
     }
-    .btn-exit:hover { background: rgba(239, 68, 68, 0.2); }
+    .btn-exit:hover { background: rgba(192, 96, 94, 0.2); }
     .btn-icon { width: 16px; height: 16px; }
     .full-width { width: 100%; justify-content: center; }
 
     .session-list { display: flex; flex-direction: column; gap: 10px; max-height: 450px; overflow-y: auto; }
     .session-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px; border: 1px solid rgba(99, 102, 241, 0.08); border-radius: 12px;
-      background: rgba(15, 23, 42, 0.3); transition: all 0.2s ease;
+      padding: 14px 16px; border: 1px solid rgba(125, 192, 181, 0.08); border-radius: 12px;
+      background: rgba(26, 47, 66, 0.3); transition: all 0.2s ease;
     }
-    .session-item:hover { border-color: rgba(99, 102, 241, 0.15); background: rgba(15, 23, 42, 0.5); }
-    .session-vehicle { font-weight: 700; color: #f1f5f9; font-family: monospace; font-size: 14px; }
-    .session-details { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; margin-top: 4px; }
-    .session-type { color: #818cf8; font-weight: 500; }
-    .session-dot { color: #334155; }
-    .session-time { color: #fbbf24; font-weight: 500; }
+    .session-item:hover { border-color: rgba(125, 192, 181, 0.15); background: rgba(26, 47, 66, 0.5); }
+    .session-vehicle { font-weight: 700; color: #EFE5D0; font-family: monospace; font-size: 14px; }
+    .session-details { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6d8399; margin-top: 4px; }
+    .session-type { color: #7DC0B5; font-weight: 500; }
+    .session-dot { color: #3a5670; }
+    .session-time { color: #d4a953; font-weight: 500; }
 
     .loading-container { display: flex; justify-content: center; padding: 40px; }
-    .spinner { width: 32px; height: 32px; border: 3px solid rgba(99, 102, 241, 0.2); border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .spinner { width: 32px; height: 32px; border: 3px solid rgba(80, 138, 123, 0.2); border-top-color: #7DC0B5; border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .empty-state { text-align: center; padding: 40px; color: #64748b; }
+    .empty-state { text-align: center; padding: 40px; color: #6d8399; }
 
     /* Modal */
     .modal-overlay {
@@ -240,35 +286,36 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
       backdrop-filter: blur(4px); animation: fadeIn 0.15s ease;
     }
     .modal {
-      background: #1e293b; border: 1px solid rgba(99, 102, 241, 0.2);
+      background: #253d52; border: 1px solid rgba(125, 192, 181, 0.2);
       border-radius: 16px; width: 440px; max-width: 90vw; animation: slideUp 0.2s ease;
     }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .modal-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 24px; border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      padding: 20px 24px; border-bottom: 1px solid rgba(125, 192, 181, 0.1);
     }
-    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #f1f5f9; }
+    .modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #EFE5D0; }
     .modal-close {
       width: 32px; height: 32px; border: none; border-radius: 8px;
-      background: rgba(99, 102, 241, 0.1); color: #94a3b8; cursor: pointer; font-size: 16px;
+      background: rgba(80, 138, 123, 0.1); color: #a8b8c8; cursor: pointer; font-size: 16px;
       display: flex; align-items: center; justify-content: center;
     }
     .modal-body { padding: 24px; }
     .modal-footer {
-      padding: 16px 24px; border-top: 1px solid rgba(99, 102, 241, 0.1);
+      padding: 16px 24px; border-top: 1px solid rgba(125, 192, 181, 0.1);
       display: flex; justify-content: flex-end; gap: 10px; align-items: center;
     }
 
     .exit-summary { display: flex; flex-direction: column; gap: 12px; }
     .exit-row { display: flex; justify-content: space-between; align-items: center; }
-    .exit-label { font-size: 13px; color: #64748b; }
-    .exit-value { font-size: 14px; color: #f1f5f9; font-weight: 500; }
+    .exit-label { font-size: 13px; color: #6d8399; }
+    .exit-value { font-size: 14px; color: #EFE5D0; font-weight: 500; }
     .vehicle-num { font-family: monospace; }
-    .highlight { color: #fbbf24; }
-    .fee { font-size: 20px; font-weight: 700; color: #34d399; }
+    .highlight { color: #d4a953; }
+    .total-row { border-top: 1px dashed rgba(125, 192, 181, 0.2); padding-top: 12px; margin-top: 4px; }
+    .fee { font-size: 20px; font-weight: 700; color: #7DC0B5; }
 
-    .exit-success { display: flex; align-items: center; gap: 8px; color: #34d399; font-weight: 500; font-size: 14px; flex: 1; }
+    .exit-success { display: flex; align-items: center; gap: 8px; color: #7DC0B5; font-weight: 500; font-size: 14px; flex: 1; }
     .success-icon { width: 20px; height: 20px; }
 
     .toast {
@@ -276,8 +323,8 @@ import { ParkingSession, ParkingSlot } from '../../core/models';
       border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 200;
       animation: slideUp 0.3s ease;
     }
-    .toast.success { background: rgba(16, 185, 129, 0.9); color: white; }
-    .toast.error { background: rgba(239, 68, 68, 0.9); color: white; }
+    .toast.success { background: rgba(80, 138, 123, 0.9); color: white; }
+    .toast.error { background: rgba(192, 96, 94, 0.9); color: white; }
   `]
 })
 export class VehicleEntryExitComponent implements OnInit {
@@ -294,6 +341,10 @@ export class VehicleEntryExitComponent implements OnInit {
     vehicleNumber: '',
     vehicleType: 'car' as ParkingSession['vehicleType'],
     assignedSlot: '',
+    driverName: '',
+    phoneNumber: '',
+    licenseNumber: '',
+    expectedDuration: 120 // Default 2 hours
   };
 
   vehicleTypes = [
@@ -306,6 +357,7 @@ export class VehicleEntryExitComponent implements OnInit {
   constructor(
     private sessionService: ParkingSessionService,
     private slotService: ParkingSlotService,
+    private receiptService: ReceiptService
   ) {}
 
   ngOnInit() {
@@ -324,7 +376,7 @@ export class VehicleEntryExitComponent implements OnInit {
   }
 
   isEntryValid(): boolean {
-    return !!(this.entryForm.vehicleNumber && this.entryForm.vehicleType && this.entryForm.assignedSlot);
+    return !!(this.entryForm.vehicleNumber && this.entryForm.vehicleType && this.entryForm.assignedSlot && this.entryForm.expectedDuration && this.entryForm.driverName && this.entryForm.phoneNumber && this.entryForm.licenseNumber);
   }
 
   registerEntry() {
@@ -332,7 +384,7 @@ export class VehicleEntryExitComponent implements OnInit {
     this.sessionService.createEntry(this.entryForm).subscribe(res => {
       if (res.success) {
         this.showToast('Vehicle entry registered!', 'success');
-        this.entryForm = { vehicleNumber: '', vehicleType: 'car', assignedSlot: '' };
+        this.entryForm = { vehicleNumber: '', vehicleType: 'car', assignedSlot: '', driverName: '', phoneNumber: '', licenseNumber: '', expectedDuration: 120 };
         this.loadData();
       }
     });
@@ -366,6 +418,12 @@ export class VehicleEntryExitComponent implements OnInit {
         this.loadData();
       }
     });
+  }
+
+  downloadReceipt() {
+    if (this.exitResult) {
+      this.receiptService.generateReceipt(this.exitResult);
+    }
   }
 
   showToast(message: string, type: string) {

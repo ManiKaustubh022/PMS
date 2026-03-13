@@ -1,0 +1,78 @@
+# Build folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# ASP.NET Core
+wwwroot/lib/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish output
+publish/
+out/
+
+# Environment variables
+.env
+.env.*
+
+# App settings overrides
+appsettings.Development.json
+appsettings.Local.json
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Test results
+TestResults/
+*.trx
+
+# Coverage
+coverage/
+coverage*.json
+
+# Node (if frontend tools used inside backend)
+node_modules/
+
+# Docker
+docker-compose.override.yml
+
+# Logs and runtime files
+*.pid
+*.seed
+*.pid.lock
+
+# Entity Framework
+Migrations/*Designer.cs
+Migrations/*Snapshot.cs

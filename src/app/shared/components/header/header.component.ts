@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
           <input type="text" placeholder="Search..." class="search-input" />
         </div>
         <button class="notification-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
           </svg>
           <span class="notification-badge">3</span>
@@ -31,28 +31,28 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [`
     .app-header {
-      height: 64px;
-      background: rgba(15, 23, 42, 0.8);
+      height: 56px;
+      background: rgba(30, 52, 72, 0.85);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      border-bottom: 1px solid rgba(125, 192, 181, 0.1);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 28px;
+      padding: 0 24px;
       position: sticky;
       top: 0;
       z-index: 40;
     }
     .page-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      color: #f1f5f9;
+      color: #EFE5D0;
       margin: 0;
     }
     .header-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
     .header-search {
       position: relative;
@@ -61,36 +61,36 @@ import { CommonModule } from '@angular/common';
     }
     .search-icon {
       position: absolute;
-      left: 12px;
-      width: 16px;
-      height: 16px;
-      color: #64748b;
+      left: 10px;
+      width: 15px;
+      height: 15px;
+      color: #6d8399;
     }
     .search-input {
-      width: 220px;
-      padding: 8px 12px 8px 36px;
-      border: 1px solid rgba(99, 102, 241, 0.15);
-      border-radius: 10px;
-      background: rgba(30, 41, 59, 0.6);
-      color: #f1f5f9;
+      width: 180px;
+      padding: 7px 10px 7px 32px;
+      border: 1px solid rgba(125, 192, 181, 0.15);
+      border-radius: 8px;
+      background: rgba(37, 61, 82, 0.6);
+      color: #EFE5D0;
       font-size: 13px;
       outline: none;
       transition: all 0.2s ease;
     }
-    .search-input::placeholder { color: #64748b; }
+    .search-input::placeholder { color: #6d8399; }
     .search-input:focus {
-      border-color: rgba(99, 102, 241, 0.4);
-      background: rgba(30, 41, 59, 0.9);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      border-color: rgba(125, 192, 181, 0.4);
+      background: rgba(37, 61, 82, 0.9);
+      box-shadow: 0 0 0 3px rgba(125, 192, 181, 0.08);
     }
     .notification-btn {
       position: relative;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: 1px solid rgba(99, 102, 241, 0.1);
-      background: rgba(30, 41, 59, 0.4);
-      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid rgba(125, 192, 181, 0.1);
+      background: rgba(37, 61, 82, 0.4);
+      color: #a8b8c8;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -98,37 +98,42 @@ import { CommonModule } from '@angular/common';
       transition: all 0.2s ease;
     }
     .notification-btn:hover {
-      background: rgba(99, 102, 241, 0.1);
-      color: #c7d2fe;
+      background: rgba(80, 138, 123, 0.15);
+      color: #EFE5D0;
     }
-    .notification-btn svg { width: 20px; height: 20px; }
+    .notification-btn svg { width: 18px; height: 18px; }
     .notification-badge {
       position: absolute;
       top: -4px;
       right: -4px;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
-      background: #ef4444;
+      background: #c0605e;
       color: white;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #6366f1, #818cf8);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #508A7B, #7DC0B5);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .header-search { display: none; }
+      .app-header { padding: 0 12px; }
     }
   `]
 })

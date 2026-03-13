@@ -131,13 +131,13 @@ Chart.register(...registerables);
       align-items: center;
       justify-content: center;
       height: 400px;
-      color: #94a3b8;
+      color: #a8b8c8;
       gap: 16px;
     }
     .spinner {
       width: 40px; height: 40px;
-      border: 3px solid rgba(99, 102, 241, 0.2);
-      border-top-color: #6366f1;
+      border: 3px solid rgba(125, 192, 181, 0.2);
+      border-top-color: #508A7B;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -150,8 +150,8 @@ Chart.register(...registerables);
       margin-bottom: 24px;
     }
     .stat-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      border: 1px solid rgba(99, 102, 241, 0.1);
+      background: linear-gradient(135deg, rgba(37, 61, 82, 0.8), rgba(37, 61, 82, 0.5));
+      border: 1px solid rgba(125, 192, 181, 0.1);
       border-radius: 16px;
       padding: 20px;
       display: flex;
@@ -161,7 +161,7 @@ Chart.register(...registerables);
       backdrop-filter: blur(8px);
     }
     .stat-card:hover {
-      border-color: rgba(99, 102, 241, 0.25);
+      border-color: rgba(125, 192, 181, 0.25);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
@@ -172,17 +172,17 @@ Chart.register(...registerables);
       flex-shrink: 0;
     }
     .stat-icon svg { width: 24px; height: 24px; }
-    .stat-icon.blue { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-    .stat-icon.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .stat-icon.orange { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .stat-icon.blue { background: rgba(125, 192, 181, 0.15); color: #7DC0B5; }
+    .stat-icon.green { background: rgba(16, 185, 129, 0.15); color: #7DC0B5; }
+    .stat-icon.orange { background: rgba(245, 158, 11, 0.15); color: #d4a953; }
     .stat-icon.purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
-    .stat-icon.emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .stat-icon.emerald { background: rgba(16, 185, 129, 0.15); color: #7DC0B5; }
     .stat-info { display: flex; flex-direction: column; }
-    .stat-label { font-size: 13px; color: #94a3b8; font-weight: 500; }
-    .stat-value { font-size: 28px; font-weight: 700; color: #f1f5f9; margin-top: 2px; }
-    .green-text { color: #34d399 !important; }
-    .orange-text { color: #fbbf24 !important; }
-    .emerald-text { color: #34d399 !important; }
+    .stat-label { font-size: 13px; color: #a8b8c8; font-weight: 500; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #EFE5D0; margin-top: 2px; }
+    .green-text { color: #7DC0B5 !important; }
+    .orange-text { color: #d4a953 !important; }
+    .emerald-text { color: #7DC0B5 !important; }
 
     .charts-row {
       display: grid;
@@ -191,19 +191,19 @@ Chart.register(...registerables);
       margin-bottom: 24px;
     }
     .chart-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      border: 1px solid rgba(99, 102, 241, 0.1);
+      background: linear-gradient(135deg, rgba(37, 61, 82, 0.8), rgba(37, 61, 82, 0.5));
+      border: 1px solid rgba(125, 192, 181, 0.1);
       border-radius: 16px;
       padding: 20px;
     }
-    .card-title { font-size: 16px; font-weight: 600; color: #f1f5f9; margin: 0 0 16px; }
+    .card-title { font-size: 16px; font-weight: 600; color: #EFE5D0; margin: 0 0 16px; }
     .chart-container { position: relative; }
     .doughnut-container { height: 260px; display: flex; align-items: center; justify-content: center; }
     .bar-container { height: 260px; }
 
     .activity-card {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-      border: 1px solid rgba(99, 102, 241, 0.1);
+      background: linear-gradient(135deg, rgba(37, 61, 82, 0.8), rgba(37, 61, 82, 0.5));
+      border: 1px solid rgba(125, 192, 181, 0.1);
       border-radius: 16px;
       padding: 20px;
     }
@@ -217,28 +217,28 @@ Chart.register(...registerables);
       padding: 12px 16px;
       font-size: 12px;
       font-weight: 600;
-      color: #64748b;
+      color: #6d8399;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      border-bottom: 1px solid rgba(125, 192, 181, 0.1);
     }
     .activity-table td {
       padding: 12px 16px;
       font-size: 14px;
       color: #cbd5e1;
-      border-bottom: 1px solid rgba(99, 102, 241, 0.05);
+      border-bottom: 1px solid rgba(125, 192, 181, 0.05);
     }
-    .activity-table tr:hover td { background: rgba(99, 102, 241, 0.04); }
-    .vehicle-num { font-weight: 600; color: #f1f5f9; font-family: monospace; font-size: 13px; }
-    .time-cell { font-size: 13px; color: #94a3b8; }
+    .activity-table tr:hover td { background: rgba(125, 192, 181, 0.04); }
+    .vehicle-num { font-weight: 600; color: #EFE5D0; font-family: monospace; font-size: 13px; }
+    .time-cell { font-size: 13px; color: #a8b8c8; }
     .action-badge {
       padding: 4px 10px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
     }
-    .action-badge.entry { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .action-badge.exit { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .action-badge.entry { background: rgba(16, 185, 129, 0.15); color: #7DC0B5; }
+    .action-badge.exit { background: rgba(239, 68, 68, 0.15); color: #e07a78; }
 
     @media (max-width: 768px) {
       .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -298,7 +298,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           maintainAspectRatio: false,
           cutout: '65%',
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 16, font: { size: 13 } } },
+            legend: { position: 'bottom', labels: { color: '#a8b8c8', padding: 16, font: { size: 13 } } },
           },
         },
       });
@@ -314,8 +314,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           datasets: [{
             label: 'Revenue (₹)',
             data: this.stats.weeklyRevenue,
-            backgroundColor: 'rgba(99, 102, 241, 0.6)',
-            borderColor: 'rgba(99, 102, 241, 1)',
+            backgroundColor: 'rgba(125, 192, 181, 0.6)',
+            borderColor: 'rgba(125, 192, 181, 1)',
             borderWidth: 1,
             borderRadius: 8,
             borderSkipped: false,
@@ -329,12 +329,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           },
           scales: {
             x: {
-              grid: { color: 'rgba(99, 102, 241, 0.05)' },
-              ticks: { color: '#94a3b8', font: { size: 12 } },
+              grid: { color: 'rgba(125, 192, 181, 0.05)' },
+              ticks: { color: '#a8b8c8', font: { size: 12 } },
             },
             y: {
-              grid: { color: 'rgba(99, 102, 241, 0.05)' },
-              ticks: { color: '#94a3b8', font: { size: 12 }, callback: (v) => '₹' + v },
+              grid: { color: 'rgba(125, 192, 181, 0.05)' },
+              ticks: { color: '#a8b8c8', font: { size: 12 }, callback: (v) => '₹' + v },
             },
           },
         },
@@ -342,3 +342,4 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 }
+

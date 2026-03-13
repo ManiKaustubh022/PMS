@@ -1,6 +1,6 @@
 export const API_CONFIG = {
   // Base URL — change this to your ASP.NET Core Web API URL when ready
-  baseUrl: '/api',
+  baseUrl: 'http://localhost:5107/api',
 
   endpoints: {
     // Parking Slots
