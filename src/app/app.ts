@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
@@ -10,21 +10,16 @@ import { AuthService } from './core/services/auth.service';
   standalone: true,
   imports: [RouterOutlet, SidebarComponent, HeaderComponent, CommonModule],
   template: `
-    <div class="app-layout" *ngIf="authService.isAuthenticated$ | async; else loginLayout">
-      <app-sidebar></app-sidebar>
-      <div class="main-content">
-        <app-header></app-header>
-        <main class="page-content">
-          <router-outlet></router-outlet>
-        </main>
-      </div>
+    <app-sidebar *ngIf="isLoggedIn"></app-sidebar>
+    <div [class.main-content]="isLoggedIn">
+      <app-header *ngIf="isLoggedIn"></app-header>
+      <main [class.page-content]="isLoggedIn">
+        <router-outlet></router-outlet>
+      </main>
     </div>
-    <ng-template #loginLayout>
-      <router-outlet></router-outlet>
-    </ng-template>
   `,
   styles: [`
-    .app-layout {
+    :host {
       display: flex;
       min-height: 100vh;
       background: #1e3448;
@@ -46,8 +41,15 @@ import { AuthService } from './core/services/auth.service';
     }
   `]
 })
-export class AppComponent {
-  constructor(public authService: AuthService) {
+export class AppComponent implements OnInit {
+  isLoggedIn = false;
+
+  constructor(public authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.isAuthenticated$.subscribe(val => {
+      this.isLoggedIn = val;
+    });
     this.authService.verifyToken();
   }
 }
