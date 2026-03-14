@@ -1,13 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, Pipe, PipeTransform } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from '../../../core/services/auth.service';
 
+@Pipe({
+  name: 'safeHtml',
+  standalone: true
+})
+export class SafeHtmlPipe implements PipeTransform {
+  constructor(private sanitizer: DomSanitizer) {}
+
+  transform(value: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(value);
+  }
+}
+
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, SafeHtmlPipe],
   template: `
     <aside class="sidebar" [class.collapsed]="isCollapsed">
       <div class="sidebar-header">
@@ -26,7 +38,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
       <nav class="sidebar-nav">
         <a *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="active" class="nav-item" [title]="item.label">
-          <span class="nav-icon" [innerHTML]="safeIcon(item.icon)"></span>
+          <span class="nav-icon" [innerHTML]="item.icon | safeHtml"></span>
           <span class="nav-label" *ngIf="!isCollapsed">{{ item.label }}</span>
         </a>
       </nav>
@@ -141,7 +153,7 @@ import { AuthService } from '../../../core/services/auth.service';
       align-items: center;
       justify-content: center;
     }
-    .nav-icon :deep(svg) { width: 20px; height: 20px; }
+    .nav-icon ::ng-deep svg { width: 20px; height: 20px; }
 
     .sidebar-footer {
       padding: 12px 8px;
@@ -209,11 +221,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class SidebarComponent {
   isCollapsed = false;
 
-  constructor(private authService: AuthService, private sanitizer: DomSanitizer) {}
-
-  safeIcon(html: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(html);
-  }
+  constructor(private authService: AuthService) {}
 
   logout() {
     this.authService.logout();
